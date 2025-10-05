@@ -1,0 +1,203 @@
+/* app.css — Tailwind v4, CSS-first, elegant defaults */
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* Allow class/attribute-driven dark mode */
+@custom-variant dark (&:where(.dark, [data-theme="dark"], .dark *, [data-theme="dark"] *));
+
+/* --------------------------------------------------------------------- */
+/* THEME TOKENS                                                        */
+/* --------------------------------------------------------------------- */
+@theme {
+  --font-sans: var(--font-geist-sans, Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif);
+  --font-mono: var(--font-geist-mono, ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace);
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-border: var(--border-color);
+
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --shadow-soft: 0 1px 2px rgb(0 0 0 / 0.06), 0 1px 1px rgb(0 0 0 / 0.04);
+  --shadow-elevated: 0 10px 30px rgb(0 0 0 / 0.14);
+}
+
+/* --------------------------------------------------------------------- */
+/* LIGHT / DARK TOKEN VALUES                                           */
+/* --------------------------------------------------------------------- */
+:root {
+  --background: #f9fafb;
+  --foreground: #111827;
+  --accent: #2563eb;
+  --accent-hover: #1d4ed8;
+  --border-color: #e5e7eb;
+  color-scheme: light;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0f172a;
+    --foreground: #ffffff;
+    --accent: #3b82f6;
+    --accent-hover: #2563eb;
+    --border-color: #334155;
+    color-scheme: dark;
+  }
+}
+
+.dark, [data-theme="dark"] {
+  --background: #0f172a;
+  --foreground: #ffffff;
+  --accent: #3b82f6;
+  --accent-hover: #2563eb;
+  --border-color: #334155;
+  color-scheme: dark;
+}
+
+/* --------------------------------------------------------------------- */
+/* GLOBAL FIX: Ensure text is visible                                 */
+/* --------------------------------------------------------------------- */
+html, body { height: 100%; }
+
+body {
+  background: var(--background);
+  color: var(--foreground) !important;
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  font-size: 1rem;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* Utility for explicit usage */
+@layer utilities {
+  .text-foreground {
+    color: var(--foreground) !important;
+  }
+}
+
+/* --------------------------------------------------------------------- */
+/* TYPOGRAPHY FIXES FOR DARK MODE                                     */
+/* --------------------------------------------------------------------- */
+@layer components {
+  .prose,
+  .dark .prose,
+  .markdown-content.prose,
+  .dark .markdown-content.prose,
+  [data-theme="dark"] .markdown-content.prose {
+    color: var(--foreground) !important;
+  }
+
+  /* FIX: Explicit light text color for dark mode in markdown prose */
+  .dark .markdown-content.prose,
+  [data-theme="dark"] .markdown-content.prose {
+    color: #e5e7eb !important; /* Tailwind gray-200 for visibility */
+  }
+
+  .prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, a, blockquote, code, pre),
+  .dark .prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, a, blockquote, code, pre),
+  .markdown-content.prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, a, blockquote, code, pre),
+  .dark .markdown-content.prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, a, blockquote, code, pre),
+  [data-theme="dark"] .markdown-content.prose :where(p, li, h1, h2, h3, h4, h5, h6, strong, em, a, blockquote, code, pre) {
+    color: var(--foreground) !important;
+  }
+
+  .dark .prose pre,
+  .dark .prose code,
+  .dark .prose blockquote {
+    background-color: #1e293b !important;
+    color: #e2e8f0 !important;
+  }
+
+  .prose a {
+    color: var(--accent);
+  }
+
+  .prose a:hover {
+    color: var(--accent-hover);
+  }
+}
+
+/* Selection color */
+::selection {
+  background: color-mix(in oklch, var(--accent), transparent 80%);
+  color: var(--accent);
+}
+
+/* --------------------------------------------------------------------- */
+/* FORM CONTROLS (inputs/textarea/select)                             */
+/* --------------------------------------------------------------------- */
+input,
+textarea,
+select,
+.react-datepicker__input-container input {
+  color: var(--foreground) !important;
+  background-color: var(--background);
+  -webkit-text-fill-color: var(--foreground);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: color-mix(in oklch, var(--foreground), transparent 35%);
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder,
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: #9ca3af;
+}
+
+.dark input,
+.dark textarea,
+.dark select,
+[data-theme="dark"] input,
+[data-theme="dark"] textarea,
+[data-theme="dark"] select,
+.dark .react-datepicker__input-container input,
+[data-theme="dark"] .react-datepicker__input-container input {
+  background-color: #374151;
+  color: #ffffff !important;
+  -webkit-text-fill-color: #ffffff !important;
+}
+
+/* Autofill fix */
+input:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--foreground) !important;
+  transition: background-color 9999s ease-out 0s;
+}
+
+/* Prevent gradient text leaking into form controls */
+.headline-gradient { /* your gradient styles ... */ }
+
+input.headline-gradient,
+textarea.headline-gradient,
+select.headline-gradient {
+  color: var(--foreground) !important;
+  -webkit-text-fill-color: var(--foreground) !important;
+  background-image: none !important;
+}
+
+/* --------------------------------------------------------------------- */
+/* Clerk user button dark mode visibility fix                           */
+/* --------------------------------------------------------------------- */
+.dark .cl-userButtonBox,
+[data-theme="dark"] .cl-userButtonBox {
+  color: var(--foreground) !important;
+}
+
+.dark .cl-userButtonOuterIdentifier,
+[data-theme="dark"] .cl-userButtonOuterIdentifier {
+  color: var(--foreground) !important;
+}
+
+.dark .cl-avatarBox,
+[data-theme="dark"] .cl-avatarBox {
+  background-color: transparent !important;
+}
+
+.dark .cl-avatarImage {
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 4px var(--accent);
+}
