@@ -32,4 +32,40 @@ PersonalMed Assistant is an AI-powered medical consultation assistant designed t
 - React Markdown for rendering generated summaries  
 - OpenAI or custom AI backend for generating summaries and emails  
 
--TBD-
+### Docker
+
+- Load variables from .env file
+```
+Get-Content .env | ForEach-Object {
+    if ($_ -match '^(.+?)=(.+)$') {
+        [System.Environment]::SetEnvironmentVariable($matches[1], $matches[2])
+    }
+}
+```
+- Check variable
+```
+Get-ChildItem Env:
+```
+- Build docker
+```
+docker build `
+  --build-arg NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY="$env:NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY" `
+  -t consultation-app .
+
+```
+- Run docker
+```
+docker run -p 8000:8000 `
+  -e CLERK_SECRET_KEY="$CLERK_SECRET_KEY" `
+  -e CLERK_JWKS_URL="$CLERK_JWKS_URL" `
+  -e AZURE_OPENAI_API_KEY="$AZURE_OPENAI_API_KEY" `
+  -e AZURE_OPENAI_ENDPOINT="$AZURE_OPENAI_ENDPOINT" `
+  -e AZURE_OPENAI_API_VERSION="$AZURE_OPENAI_API_VERSION" `
+  -e AZURE_OPENAI_DEPLOYMENT="$AZURE_OPENAI_DEPLOYMENT" `
+  consultation-app
+
+```
+or
+```
+docker run -p 8000:8000 --env-file .env consultation-app
+```
